@@ -1,0 +1,16 @@
+# Python 3.11 recommended
+gymnasium>=0.29
+torch>=2.2
+numpy
+pandas
+scikit-learn>=1.4
+matplotlib
+seaborn
+pyyaml
+tqdm
+joblib
+pytest
+
+# optional
+tensorboard
+kaggle

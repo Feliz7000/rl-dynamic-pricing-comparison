@@ -1,0 +1,15 @@
+agent: dqn
+action_mode: discrete
+k_buckets: 11
+total_steps: 50000
+episode_horizon: 20
+hyperparams:
+  gamma: 0.99
+  lr: 0.001
+  buffer_capacity: 50000
+  batch_size: 64
+  warmup_steps: 500
+  target_update_interval: 100
+  eps_start: 1.0
+  eps_end: 0.05
+  eps_decay_steps: 25000

@@ -1,0 +1,13 @@
+agent: sac
+action_mode: continuous
+total_steps: 50000
+episode_horizon: 20
+hyperparams:
+  gamma: 0.99
+  actor_lr: 0.0003
+  critic_lr: 0.0003
+  alpha_lr: 0.0003
+  tau: 0.005
+  buffer_capacity: 50000
+  batch_size: 64
+  warmup_steps: 500

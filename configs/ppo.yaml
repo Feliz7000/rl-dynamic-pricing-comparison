@@ -1,0 +1,15 @@
+agent: ppo
+action_mode: continuous
+total_steps: 50000
+episode_horizon: 20
+hyperparams:
+  gamma: 0.99
+  gae_lambda: 0.95
+  clip_eps: 0.2
+  lr: 0.0003
+  rollout_steps: 1024
+  n_epochs: 10
+  minibatch_size: 64
+  entropy_coef: 0.01
+  value_coef: 0.5
+  max_grad_norm: 0.5
