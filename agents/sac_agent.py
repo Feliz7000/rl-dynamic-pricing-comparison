@@ -2,11 +2,12 @@
 continuous prices. Stochastic tanh-squashed Gaussian policy, twin critics
 (minimum taken to reduce overestimation bias), and an automatically-tuned
 temperature alpha -- directly answering the exploration-scheduling problem
-DDPG solves manually with external noise. See report Section 5 (Felix).
+DDPG solves manually with external noise. See report Section 5.
 
-This is the author's own assigned algorithm in the team report, so the math
-here is deliberately spelled out step by step and covered by extra unit
-tests (tests/test_agents_smoke.py) rather than compressed into helpers.
+The math here is deliberately spelled out step by step and covered by extra
+unit tests (tests/test_agents_smoke.py) rather than compressed into helpers,
+since the entropy/twin-critic/temperature interplay is the easiest place to
+introduce a silent sign or detach bug.
 """
 from __future__ import annotations
 

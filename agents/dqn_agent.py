@@ -1,7 +1,7 @@
 """DQN (Mnih et al., 2015): value-based, off-policy, discrete price/discount
 buckets. Q(s,a|theta) trained via TD learning against a periodically-updated
 target network, with experience replay to decorrelate updates. See report
-Section 3 (Davis)."""
+Section 3."""
 from __future__ import annotations
 
 from pathlib import Path

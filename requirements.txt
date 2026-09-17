@@ -10,6 +10,7 @@ pyyaml
 tqdm
 joblib
 pytest
+streamlit          # live presentation app (app/streamlit_app.py)
 
 # optional
 tensorboard

@@ -8,3 +8,7 @@ results/logs/
 results/models/
 *.egg-info/
 .pytest_cache/
+
+# dashboard build artefacts (the single-file build is committed at docs/index.html)
+dashboard/node_modules/
+dashboard/dist/

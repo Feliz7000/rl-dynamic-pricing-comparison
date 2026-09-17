@@ -1,7 +1,7 @@
 """PPO (Schulman et al., 2017): on-policy actor-critic with a clipped
 surrogate objective, trained on fresh on-policy rollouts (no replay buffer).
 Run in continuous mode here (see plan) so it's directly comparable to
-DDPG/SAC on price fidelity. See report Section 4 (Akhil)."""
+DDPG/SAC on price fidelity. See report Section 4."""
 from __future__ import annotations
 
 from pathlib import Path

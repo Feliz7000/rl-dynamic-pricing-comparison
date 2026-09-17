@@ -2,7 +2,7 @@
 continuous prices, critic trained by TD/Bellman error, soft target networks
 for both actor and critic. Exploration is external (Ornstein-Uhlenbeck
 noise, annealed over training) since the actor itself is deterministic. See
-report Section 2 (Shawn)."""
+report Section 2."""
 from __future__ import annotations
 
 from pathlib import Path

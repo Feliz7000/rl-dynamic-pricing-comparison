@@ -26,10 +26,10 @@ FIG_DIR = ROOT / "results" / "figures"
 
 AGENT_ORDER = ["static", "random", "dqn", "ddpg", "ppo", "sac"]
 AGENT_LABELS = {
-    "dqn": "DQN (Davis)",
-    "ddpg": "DDPG (Shawn)",
-    "ppo": "PPO (Akhil)",
-    "sac": "SAC (Felix)",
+    "dqn": "DQN",
+    "ddpg": "DDPG",
+    "ppo": "PPO",
+    "sac": "SAC",
     "random": "Random",
     "static": "Static (no change)",
 }

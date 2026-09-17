@@ -4,14 +4,14 @@ Companion codebase to `CIA3_Algorithm_Report_TeamOfFour.docx`, which compares fo
 reinforcement learning algorithms applied to the *same* dynamic-pricing MDP from
 Liu et al. (2019), "Dynamic Pricing on E-commerce Platform with Deep Reinforcement
 Learning: A Field Experiment" (arXiv:1912.02572) — the field-tested system Alibaba
-built for Tmall.com. Each teammate owns one algorithm in the report:
+built for Tmall.com. The four algorithms compared:
 
-| Algorithm | Teammate | Action space | On/off-policy |
-|---|---|---|---|
-| DQN  | Davis | Discrete price buckets | Off-policy |
-| DDPG | Shawn | Continuous price | Off-policy |
-| PPO  | Akhil | Continuous price | On-policy |
-| SAC  | Felix | Continuous price | Off-policy |
+| Algorithm | Action space | On/off-policy |
+|---|---|---|
+| DQN  | Discrete price buckets | Off-policy |
+| DDPG | Continuous price | Off-policy |
+| PPO  | Continuous price | On-policy |
+| SAC  | Continuous price | Off-policy |
 
 This project builds a real, runnable comparison of all four on a shared environment,
 grounded in a public retail-pricing dataset, to back the report with measured
@@ -88,6 +88,39 @@ TOTAL_STEPS=50000 SEEDS="0 1 2 3 4" bash scripts/run_full_comparison.sh
 (a measured version of the report's Section 6 table) and plots in
 `results/figures/` (learning curves, held-out test DRCR bar chart, cross-seed
 stability box plot).
+
+## Presentation dashboard
+
+Two front-ends, both driven by the real artifacts above — nothing on screen is
+synthesized:
+
+**1. Self-contained dashboard** (`docs/index.html`, ~1.3 MB, no server, no Python):
+open it directly in a browser, or serve it through GitHub Pages (Settings → Pages →
+branch `master`, folder `/docs`). Four tabs, deep-linkable by URL hash:
+
+| Tab | What it shows |
+|---|---|
+| `#simulate` | 20 held-out products ranked by revenue uplift vs. the seller's own prices; per-product price trajectories (historical, static baseline, 4 agents, guard-rail hits); a ▶ Play control that replays the month-by-month **race** with a live scoreboard; revenue by product and the headline aggregate-uplift chart. |
+| `#whatif` | Pick a product and month, drag a candidate price: the demand model's revenue and demand response curves, with the seller's price and each agent's chosen price marked. |
+| `#training` | Rolling reward with cross-seed bands and the running mean, per algorithm and per seed (loss curves appear automatically for runs that logged them). |
+| `#results` | The measured comparison table and chart, the MDP definition, the demand model's fit and guard rails. |
+
+It is a React + Recharts app in `dashboard/` (UI adapted from a teammate's prototype),
+built into one file with Vite:
+
+```bash
+python scripts/export_dashboard_data.py   # checkpoints + demand model + logs -> dashboard/data/dashboard_data.json
+python scripts/build_dashboard.py         # export + npm run build -> docs/index.html   (needs Node 18+)
+cd dashboard && npm run dev               # live-reload development server
+```
+
+**2. Live Streamlit app** (`app/streamlit_app.py`) for Q&A: the same what-if slider
+and month-by-month agent decisions, but evaluated on the spot with the actual
+checkpoints and demand model (any product, training or held-out).
+
+```bash
+streamlit run app/streamlit_app.py
+```
 
 ## Design notes worth knowing before extending this
 

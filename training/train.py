@@ -38,6 +38,20 @@ ROOT = Path(__file__).resolve().parent.parent
 LEARNING_AGENTS = {"dqn", "ddpg", "ppo", "sac"}
 BASELINE_AGENTS = {"random", "static"}
 
+# Union of the scalar metrics the four agents' update() methods can return.
+METRIC_KEYS = (
+    "loss",
+    "critic_loss",
+    "actor_loss",
+    "policy_loss",
+    "value_loss",
+    "alpha_loss",
+    "alpha",
+    "entropy",
+    "q_mean",
+    "epsilon",
+)
+
 
 def build_agent(name: str, state_dim: int, action_mode: str, k_buckets: int, seed: int, hyperparams: dict) -> BaseAgent:
     if name == "dqn":
@@ -112,8 +126,12 @@ def main():
     log_path = log_dir / f"{args.agent}_{args.seed}.csv"
 
     fieldnames = ["global_step", "episode", "product_id", "price", "qty_hat", "rcr", "drcr", "reward"]
+    # Optional learning metrics returned by agent.update(); each algorithm
+    # fills the subset it has, blanks elsewhere. Kept as a fixed superset so
+    # the CSV header is known up front.
+    metric_fields = [f"m_{k}" for k in METRIC_KEYS]
     with open(log_path, "w", newline="") as f:
-        writer = csv.DictWriter(f, fieldnames=fieldnames)
+        writer = csv.DictWriter(f, fieldnames=fieldnames + metric_fields, restval="")
         writer.writeheader()
 
         episode = 0
@@ -123,20 +141,22 @@ def main():
             next_state, reward, terminated, truncated, step_info = env.step(action)
             done = terminated or truncated
             agent.observe(state, action, reward, next_state, done)
-            agent.update()
+            metrics = agent.update()
 
-            writer.writerow(
-                {
-                    "global_step": global_step,
-                    "episode": episode,
-                    "product_id": step_info["product_id"],
-                    "price": step_info["price"],
-                    "qty_hat": step_info["qty_hat"],
-                    "rcr": step_info["rcr"],
-                    "drcr": step_info["drcr"],
-                    "reward": reward,
-                }
-            )
+            row = {
+                "global_step": global_step,
+                "episode": episode,
+                "product_id": step_info["product_id"],
+                "price": step_info["price"],
+                "qty_hat": step_info["qty_hat"],
+                "rcr": step_info["rcr"],
+                "drcr": step_info["drcr"],
+                "reward": reward,
+            }
+            for k, v in metrics.items():
+                if k in METRIC_KEYS:
+                    row[f"m_{k}"] = v
+            writer.writerow(row)
 
             state = next_state
             if done:
