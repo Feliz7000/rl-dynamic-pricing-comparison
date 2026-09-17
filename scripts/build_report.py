@@ -106,27 +106,46 @@ def style_ax(ax):
 
 
 def fig_workflow(path):
-    fig, ax = plt.subplots(figsize=(9, 3.2))
+    """Environment -> State -> Agent -> Action -> Reward, with the two
+    feedback loops (next state, learning update) routed as orthogonal
+    connectors below and above the row so nothing crosses a box."""
+    fig, ax = plt.subplots(figsize=(9.5, 3.6))
     ax.axis("off")
-    boxes = [
-        ("Environment\nPricingEnv + demand model", 0.5),
-        ("State s(t)\n35 features", 2.3),
-        ("Agent\nDQN / DDPG / PPO / SAC", 4.1),
-        ("Action a(t)\nprice within ±25 %", 5.9),
-        ("Reward r(t)\n100 × DRCR", 7.7),
+    bw, bh, y0 = 1.55, 1.05, 1.35
+    xs = [0.4, 2.4, 4.4, 6.4, 8.4]
+    labels = [
+        ("Environment", "PricingEnv +\ndemand model"),
+        ("State s(t)", "35 features"),
+        ("Agent", "DQN / DDPG /\nPPO / SAC"),
+        ("Action a(t)", "price within\n±25 % of entering"),
+        ("Reward r(t)", "100 × DRCR"),
     ]
-    for text, x in boxes:
-        ax.add_patch(plt.Rectangle((x, 1.2), 1.6, 1.0, fc="#EAF1FA", ec="#3B6FD8", lw=1.2))
-        ax.text(x + 0.8, 1.7, text, ha="center", va="center", fontsize=8.5)
-    for i in range(len(boxes) - 1):
-        ax.annotate("", xy=(boxes[i + 1][1], 1.7), xytext=(boxes[i][1] + 1.6, 1.7), arrowprops=dict(arrowstyle="->", lw=1.2, color="#333"))
-    ax.annotate("", xy=(1.3, 1.2), xytext=(8.5, 1.2), arrowprops=dict(arrowstyle="->", lw=1.2, color="#C98A1B", connectionstyle="arc3,rad=0.35"))
-    ax.text(4.9, 0.25, "next state s(t+1): agent's own price becomes next month's entering price; competitors, traffic and season from the real next row",
-            ha="center", fontsize=8, color="#C98A1B")
-    ax.annotate("", xy=(4.9, 2.2), xytext=(8.5, 2.2), arrowprops=dict(arrowstyle="->", lw=1.2, color="#1FA57A", connectionstyle="arc3,rad=-0.35"))
-    ax.text(6.7, 3.05, "learning update (replay buffer or rollout)", ha="center", fontsize=8, color="#1FA57A")
-    ax.set_xlim(0.2, 9.6)
-    ax.set_ylim(0, 3.3)
+    for x, (head, sub) in zip(xs, labels):
+        ax.add_patch(plt.Rectangle((x, y0), bw, bh, fc="#EAF1FA", ec="#3B6FD8", lw=1.2))
+        ax.text(x + bw / 2, y0 + bh - 0.28, head, ha="center", va="center", fontsize=9, fontweight="bold")
+        ax.text(x + bw / 2, y0 + 0.36, sub, ha="center", va="center", fontsize=7.8, color="#333")
+    ym = y0 + bh / 2
+    for i in range(len(xs) - 1):
+        ax.annotate("", xy=(xs[i + 1], ym), xytext=(xs[i] + bw, ym), arrowprops=dict(arrowstyle="-|>", lw=1.2, color="#333", shrinkA=0, shrinkB=0))
+
+    def ortho(points, color, label, label_xy):
+        px, py = zip(*points)
+        ax.plot(px[:-1], py[:-1], color=color, lw=1.2, solid_capstyle="round")
+        ax.annotate("", xy=points[-1], xytext=points[-2], arrowprops=dict(arrowstyle="-|>", lw=1.2, color=color, shrinkA=0, shrinkB=0))
+        ax.text(*label_xy, label, ha="center", va="center", fontsize=8, color=color)
+
+    # next-state loop: Reward -> below the row -> State
+    rx, sx = xs[4] + bw / 2, xs[1] + bw / 2
+    ortho([(rx, y0), (rx, 0.55), (sx, 0.55), (sx, y0)], "#C98A1B",
+          "next state s(t+1): the agent's price becomes next month's entering price;\ncompetitors, traffic and season come from the real next row",
+          ((rx + sx) / 2, 0.22))
+    # learning loop: Reward -> above the row -> Agent
+    ax_ = xs[2] + bw / 2
+    ortho([(rx, y0 + bh), (rx, 3.15), (ax_, 3.15), (ax_, y0 + bh)], "#1FA57A",
+          "learning update: transition (s, a, r, s′) stored in the replay buffer (DQN, DDPG, SAC) or rollout (PPO)",
+          ((rx + ax_) / 2, 3.38))
+    ax.set_xlim(0.2, 10.2)
+    ax.set_ylim(0, 3.6)
     fig.tight_layout()
     fig.savefig(path, dpi=200)
     plt.close(fig)
