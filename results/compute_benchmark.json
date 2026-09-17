@@ -1,0 +1,48 @@
+{
+  "machine": {
+    "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+    "python": "3.11.9",
+    "torch": "2.14.0+cpu",
+    "threads": 1,
+    "os": "Windows-10-10.0.26200-SP0"
+  },
+  "env_step_ms": 3.08,
+  "agents": {
+    "dqn": {
+      "steps": 1500,
+      "train_seconds": 13.78,
+      "steps_per_second": 108.9,
+      "seconds_per_1k_steps": 9.18,
+      "gradient_updates": 1401,
+      "inference_us_per_action": 198.4,
+      "parameters": 22539
+    },
+    "ddpg": {
+      "steps": 1500,
+      "train_seconds": 25.51,
+      "steps_per_second": 58.8,
+      "seconds_per_1k_steps": 17.01,
+      "gradient_updates": 1401,
+      "inference_us_per_action": 460.7,
+      "parameters": 42626
+    },
+    "ppo": {
+      "steps": 1500,
+      "train_seconds": 16.75,
+      "steps_per_second": 89.5,
+      "seconds_per_1k_steps": 11.17,
+      "gradient_updates": 1,
+      "inference_us_per_action": 1661.5,
+      "parameters": 42499
+    },
+    "sac": {
+      "steps": 1500,
+      "train_seconds": 34.29,
+      "steps_per_second": 43.7,
+      "seconds_per_1k_steps": 22.86,
+      "gradient_updates": 1401,
+      "inference_us_per_action": 307.4,
+      "parameters": 64132
+    }
+  }
+}

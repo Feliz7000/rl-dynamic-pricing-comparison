@@ -12,7 +12,7 @@ import subprocess
 import sys
 from pathlib import Path
 
-DATASET = "sanskar457/retail-price-optimization"
+DATASET = "suddharshan/retail-price-optimization"
 RAW_DIR = Path(__file__).resolve().parent.parent / "data" / "raw"
 
 MANUAL_INSTRUCTIONS = f"""
