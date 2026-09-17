@@ -149,8 +149,10 @@ def fig_learning_curves(logs, seeds, path):
         axes[1].plot(x, um, color=COLOR[k], label=LABEL[k], lw=1.5)
         axes[1].fill_between(x, um - us, um + us, color=COLOR[k], alpha=0.12)
     axes[0].set_ylim(-10, 10)
+    axes[1].set_ylim(-3, 4)
+    axes[1].set_xlim(300, None)
     axes[0].set_title("(a) Rolling mean reward, window 200 steps", fontsize=10)
-    axes[1].set_title("(b) Running mean reward since step 0", fontsize=10)
+    axes[1].set_title("(b) Running mean reward since step 0 (shown from step 300)", fontsize=10)
     for ax in axes:
         ax.axhline(0, color="#777", lw=0.8, ls=":")
         ax.set_xlabel("environment step")
@@ -517,7 +519,8 @@ def build():
     R.p("The action is the next month's price expressed as a move from the entering price, bounded to ±25 %. For DQN the action space is Discrete(11): bucket k maps to a multiplier 1 + (−25 % + 5 %·k), so the middle bucket is “no change” and the finest move is 5 %. For DDPG, PPO and SAC the action space is Box(−1, 1): a tanh-bounded scalar a maps to multiplier 1 + 0.25·a, an exact price. Two constraints apply to every agent. First, the price is clipped to [0.5×, 1.5×] of the product's historically observed price range (the “price guard”), and the clip is logged. Second, competitor gaps are recomputed at the chosen price, so a counterfactual price correctly changes the product's competitive position. PPO is run in continuous mode so that the three actor-critic methods are compared on equal price precision.")
     R.h("4.3 Reward Design", 2)
     R.p("Raw revenue is a poor reward because category traffic fluctuates for reasons unrelated to price [1]. Following the paper, revenue is normalised by traffic and the reward is the month-on-month change:")
-    R.eq("RCR(t) = revenue(t) / traffic(t),      DRCR(t) = RCR(t) − RCR(t − 1),      r(t) = 100 × DRCR(t)")
+    R.eq("RCR(t) = revenue(t) / traffic(t),        DRCR(t) = RCR(t) − RCR(t − 1)")
+    R.eq("r(t) = 100 × DRCR(t)")
     R.p("Traffic is proxied by the total units sold across all products in the category that month (the dataset has no visit counts). The factor 100 keeps rewards in a range neural networks train on comfortably. Because the reward is a difference, even an excellent policy's reward averages near zero once conversion has been raised; the level it settles at and how tightly it holds there are what distinguish policies. Table 3 lists the outcomes the reward rewards and punishes.")
     R.table(["Situation", "Outcome", "Reward", "Reason"], [
         ["Price raised, demand nearly inelastic", "revenue and RCR rise", "positive (typically +5 to +30)", "improvement in conversion is the objective"],
